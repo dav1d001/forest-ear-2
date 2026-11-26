@@ -1,0 +1,11 @@
+{
+  "C": 0.01,
+  "accuracy": 0.9625,
+  "precision_macro": 0.9666666666666666,
+  "recall_macro": 0.9625,
+  "f1_macro": 0.9614005602240896,
+  "log_loss": 0.23435191810131073,
+  "roc_auc_macro": 0.9984375,
+  "threats_flagged": "23/24",
+  "false_alarms": "0/56"
+}
