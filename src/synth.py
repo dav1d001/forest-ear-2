@@ -22,20 +22,23 @@ def place(rng, count, taken):
     return starts
 
 
-def build(seed: int = 0):
+def build(seed: int = 0, categories=None, out=OUT):
+    """categories: if given, background clips come only from these ESC-50 categories."""
     rng = np.random.default_rng(seed)
     d = data.load()
     test = data.split_masks(d["fold"])["test"]
     X, y = d["X"][test], d["y"][test]            # held-out clips only
-    bg, _ = background.load_other(fold=5)
+    bg, bg_cat = background.load_other(fold=5)
+    if categories is not None:
+        bg = bg[np.isin(bg_cat, categories)]
     threat_idx = [C.CLASSES.index(c) for c in sorted(C.THREAT)]
     n = DURATION * C.SR
-    OUT.mkdir(parents=True, exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
 
     truth = {}
     for r in range(N_RECORDINGS):
         audio = np.zeros(n, dtype="float32")
-        for start in range(0, n, C.CLIP_SAMPLES):      # unknown-sound background, low level
+        for start in range(0, n, C.CLIP_SAMPLES):      # background, low level
             audio[start:start + C.CLIP_SAMPLES] += 0.5 * bg[rng.integers(len(bg))]
 
         events, taken = [], []
@@ -54,10 +57,10 @@ def build(seed: int = 0):
         if peak > 0.95:
             audio *= 0.95 / peak
         name = f"rec_{r:02d}.wav"
-        sf.write(OUT / name, audio, C.SR, subtype="PCM_16")
+        sf.write(out / name, audio, C.SR, subtype="PCM_16")
         truth[name] = sorted(events, key=lambda e: e["start"])
 
-    (OUT / "truth.json").write_text(json.dumps(truth, indent=2))
+    (out / "truth.json").write_text(json.dumps(truth, indent=2))
     return truth
 
 
