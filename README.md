@@ -134,7 +134,7 @@ pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-23 fast tests cover the event detector (merging, thresholds, edge cases), the scoring rules (including the case that made my first matching rule too lenient), the metrics, the zero-shot mapping and the saved model. One test checks that the saved classifier reproduces the numbers in `results/head_metrics.json`; it runs only if the embedding cache exists. The tests use small synthetic inputs and need neither the dataset nor an internet connection, except importing TensorFlow.
+23 small tests (about a minute, mostly TensorFlow start-up) cover the event detector (merging, thresholds, edge cases), the scoring rules (including the case that made my first matching rule too lenient), the metrics, the zero-shot mapping and the saved model. One test checks that the saved classifier reproduces the numbers in `results/head_metrics.json`; it runs only if the embedding cache exists. The tests use small synthetic inputs and need neither the dataset nor an internet connection, except importing TensorFlow.
 
 ## Repository layout
 
