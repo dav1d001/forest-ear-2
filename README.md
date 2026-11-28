@@ -102,6 +102,7 @@ This is one random split of the background categories and 31 threat events, so s
 - Many ESC clips contain a short sound padded with silence, but each event is labelled as a full 5 seconds. Event boundaries are approximate.
 - The classifier is closed-set and trained on clean clips.
 - `src/detect.py` accepts 16 kHz WAV files only.
+- Two threat sounds that occur back to back are reported as one event with the dominant label. This also makes some of the second true events count as missed in section 2.
 
 ## Reproduce
 
@@ -125,6 +126,15 @@ python -m src.background_eval    # compare both heads on held-out background
 
 python -m src.detect path/to/recording.wav 0.5    # events with timestamps for one file
 ```
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest -q
+```
+
+23 fast tests cover the event detector (merging, thresholds, edge cases), the scoring rules (including the case that made my first matching rule too lenient), the metrics, the zero-shot mapping and the saved model. One test checks that the saved classifier reproduces the numbers in `results/head_metrics.json`; it runs only if the embedding cache exists. The tests use small synthetic inputs and need neither the dataset nor an internet connection, except importing TensorFlow.
 
 ## Repository layout
 
